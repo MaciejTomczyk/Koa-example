@@ -25,8 +25,13 @@ router.get '/', () ->
 router.get '/people', () ->
     users = []
     yield Person.find {}.lean, (err, coll) ->
+        if err?
+            console.log err
         users = coll || "empty"
-    yield @render 'people', people: users
+    if users? then
+        yield @render 'people', people: users
+    else
+        yield @render 'people', people: 'Could not get users'
 
 router.get '/fetch', () ->
     options = url: 'http://api.fixer.io/latest'
