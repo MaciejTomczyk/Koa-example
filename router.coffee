@@ -52,8 +52,6 @@ router.post '/add', (next) ->
 router.post '/num', (next) ->
     if @request.body?
         arr = _.values @request.body
-        shuf = _.shuffle arr 
-        max = _.max arr
         result = 
         switch +arr[0] > +arr[1]
             when true then result = _.shuffle arr else result = _.max arr
