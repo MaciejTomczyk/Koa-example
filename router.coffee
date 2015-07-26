@@ -24,8 +24,8 @@ router.get '/', () ->
 
 router.get '/people', () ->
     users = []
-    yield Person.find {}, (err, coll) ->
-        users = coll
+    yield Person.find {}.lean, (err, coll) ->
+        users = coll || "empty"
     yield @render 'people', people: users
 
 router.get '/fetch', () ->
