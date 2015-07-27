@@ -1,71 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-
-<body>
-    <h1>Hello, {{name}}!</h1>
-
+<h1>Hello, {{name}}!</h1>
     <form method="post">
-        Name: <input id="name" name="name" type="text"><br>
-        <br>
-        Lastname: <input id="lastname" name="lastname" type="text"><br>
-        <br>
+        <p>Name: <input id="name" name="name" type="text"></p>
+        <p>Lastname: <input id="lastname" name="lastname" type="text"></p>
         <button id="button" type="button">Click Me!</button>
-    </form><br>
+    </form>
 
     <form method="post">
-        Num1: <input id="num1" name="num1" type="text"><br>
-        <br>
-        Num2: <input id="num2" name="num2" type="text"><br>
-        <br>
-        Num3: <input id="num3" name="num3" type="text"><br>
-        <br>
+        <p>Num1: <input id="num1" name="num1" type="text"></p>
+        <p>Num2: <input id="num2" name="num2" type="text"></p>
+        <p>Num3: <input id="num3" name="num3" type="text"></p>
         <button id="numbutton" type="button">Click Me Too!</button>
     </form>
 
-    <div id="result"></div><script src=
-    "//code.jquery.com/jquery-1.11.3.min.js"></script> <script>
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script>
 
 $(function() {
-    $( "#button" ).click(function() {
-      var name =  $("#name").val();
-      var lastname =  $("#lastname").val();
-      var toSend = {name: name, lastname: lastname};
-      var post = sendPost('add',toSend);
-      post();
+    $("#button").click(function() {
+        var name =  $("#name").val();
+        var lastname =  $("#lastname").val();
+        var toSend = {name: name, lastname: lastname};
+        sendPost('add',toSend)();
     });
 
-    $( "#numbutton" ).click(function() {
-      var num1 =  $("#num1").val() || '1';
-      var num2 =  $("#num2").val() || '1';
-      var num3 =  $("#num3").val() || '1';
-      var toSend = {num1: num1, num2: num2, num3:num3};
-      var post = sendPost('num',toSend);
-      post();
+    $("#numbutton").click(function() {
+        var num1 =  $("#num1").val() || '1';
+        var num2 =  $("#num2").val() || '1';
+        var num3 =  $("#num3").val() || '1';
+        var toSend = {num1: num1, num2: num2, num3:num3};
+        sendPost('num',toSend)();
     });
 
 
 
-    var sendPost = function(url,stuff){
-      return function(){
+    var sendPost = function(url,dataToSend){
         $.ajax({
             method: "POST",
             url: url,
-            data: stuff
-              }).done(function( bat ) {
-                  alert( "Data Saved: " + bat );
-              }).fail(function() {
-                  alert( "error" );
-              }).always(function() {
-                  alert( "complete" ); 
-              });
-      };
+            data: dataToSend
+            }).done(function(response) {
+                alert("Data Saved: " + response);
+            }).fail(function() {
+                alert("Could not send the post");
+            }).always(function() {
+                alert("Complete"); 
+            });
     };
-
 });
 
-    </script>
-</body>
-</html>
+</script>

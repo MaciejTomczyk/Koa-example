@@ -1,5 +1,3 @@
-#Requires
-
 Router = require 'koa-router'
 request = require 'koa-request'
 _ = require 'underscore' 
@@ -19,42 +17,37 @@ module.exports = router
 
 #Routes
 
-router.get '/', () ->
+router.get '/', ->
     yield @render 'index', name:'Hi'
 
-router.get '/people', () ->
-    users = []
-    yield Person.find {}.lean, (err, coll) ->
-        if err?
-            console.log err
-        users = coll || "empty"
-    if users? then
-        yield @render 'people', people: users
-    else
-        yield @render 'people', people: 'Could not get users'
+router.get '/people', ->
+    
+    users = yield Person.find {}, (err, coll) ->
+        if err
+            throw console.log err
 
-router.get '/fetch', () ->
-    options = url: 'http://api.fixer.io/latest'
-    resp = yield request options
-    if resp?
-        json = JSON.parse resp.body
-        console.log json.rates.PLN
+    yield @render 'people', people: users || 'Could not get users'
+
+router.get '/fetch', ->
+    resp = yield request url: 'http://api.fixer.io/latest', json: true
+    if resp
+        console.log resp.body.rates.PLN
 
 
-router.post '/add', (next) ->
-    if @request.body?
-        console.log @request.body
-        r = new Person(@request.body)
-        r.save()
-        @response.body =  'string'
-    yield next
+router.post '/add', ->
+    { body } = @request
+    @throw 422 unless body
+    console.log @request.body
+    objToSave = new Person(@request.body)
+    yield objToSave.save()
+    @body =  'ok'
 
-router.post '/num', (next) ->
-    if @request.body?
-        arr = _.values @request.body
-        result = 
-        switch +arr[0] > +arr[1]
-            when true then result = _.shuffle arr else result = _.max arr
-        console.log result
-        @response.body = "ok"
-    yield next
+router.post '/num', ->
+    { body } = @request
+    @throw 422 unless body
+    yield arr = _.values @request.body
+    result = if +arr[0] > +arr[1]
+            _.shuffle arr
+        else _.max arr
+    console.log result
+    @body = 'ok'
