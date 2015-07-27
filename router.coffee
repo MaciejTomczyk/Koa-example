@@ -29,9 +29,10 @@ router.get '/people', ->
     yield @render 'people', people: users || 'Could not get users'
 
 router.get '/fetch', ->
-    resp = yield request url: 'http://api.fixer.io/latest', json: true
-    if resp
+    try 
+        resp = yield request url: 'http://api.fixer.io/latest', json: true
         console.log resp.body.rates.PLN
+    catch err then throw  console.log err
 
 
 router.post '/add', ->
